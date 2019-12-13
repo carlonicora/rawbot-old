@@ -15,6 +15,7 @@ services:
         - GROUP=${GROUP}
         - WORKERS=${WORKERS}
     working_dir: /app
+    restart: always
     volumes:
       - ../:/app:delegated
       - ../:/opt/project:delegated
