@@ -1,0 +1,3 @@
+.env
+.docker/.env
+composer.lock

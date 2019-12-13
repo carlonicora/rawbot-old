@@ -1,0 +1,30 @@
+{
+  "name": "carlonicora/rawbot",
+  "description": "Discord bot for RAW role playing game",
+  "version": "1.0.0",
+  "homepage": "https://carlonicora.com",
+  "time": "2019-11-18",
+  "authors": [
+    {
+      "name": "Carlo Nicora",
+      "email": "carlo@phlow.com",
+      "homepage": "http://carlonicora.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^7.3",
+    "ext-json": "*",
+    "carlonicora/minimalism": "~7.0",
+    "team-reflex/discord-php": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "carlonicora\\rawbot\\": "src/"
+    }
+  },
+  "require-dev": {
+    "roave/security-advisories": "dev-master",
+    "phpunit/phpunit": "^8"
+  }
+}
