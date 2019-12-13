@@ -23,10 +23,10 @@ class abilities extends abstractManagers {
                     '    Example: `/a empathy 20` or `/ability athletics 41`' . PHP_EOL .
                     'To roll an ability check during the game type `/a *nameoftheability*` and rawbot will calculate your trait, ability and roll for you.' . PHP_EOL .
                     '    Example: `/a willpower` or `/ability melee`' . PHP_EOL .
-                    'RawBot will also remember which abilities you have used during the game, levelling up your character automaticall at the end of the session.',
-                'usage'=>'/ability perception',
-                'aliases'=>['a']
+                    'RawBot will also remember which abilities you have used during the game, levelling up your character automaticall at the end of the session.'
             ]);
+
+            $discord->registerAlias('a', 'ability');
 
             $command->registerSubCommand('list', array($this, 'list'), [
                 'description'=>'Returns the list of all the abilities your character can use.'
