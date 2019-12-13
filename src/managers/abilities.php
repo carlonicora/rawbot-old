@@ -18,13 +18,13 @@ class abilities extends abstractManagers {
     public function registerCommands(DiscordCommandClient $discord): void{
         try {
             $command = $discord->registerCommand('ability', [$this, 'ability'], [
-                'description'=> '```' . PHP_EOL .
+                'description'=> PHP_EOL .
                     '    Running `/ability` will allow you to either run an ability check or update your character\'s ability.' . PHP_EOL .
                     '    To set the value of your character ability type `/a *nameoftheability* *value*` and rawbot will do it for you.' . PHP_EOL .
                     '        Example: `/a empathy 20` or `/ability athletics 41`' . PHP_EOL .
                     '    To roll an ability check during the game type `/a *nameoftheability*` and rawbot will calculate your trait, ability and roll for you.' . PHP_EOL .
                     '    RawBot will also remember which abilities you have used during the game, levelling up your character automaticall at the end of the session.' . PHP_EOL .
-                    '        Example: `/a willpower` or `/ability melee`' . PHP_EOL . '```'
+                    '        Example: `/a willpower` or `/ability melee`' . PHP_EOL
 
             ]);
 
