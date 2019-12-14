@@ -48,10 +48,7 @@ class sessions extends abstractManagers {
 
         $message->channel->sendMessage(json_encode($characters));
 
-        //foreach ($this->characters as $characterKey=>$character){
         foreach ($characters as $character) {
-
-            //if (strpos($characterKey, $request->discordServerId) === 0){
                 $variable = [
                     'name'=>$character['name'],
                     'discordUserId'=>$character['discordUserId'],
@@ -108,7 +105,6 @@ class sessions extends abstractManagers {
                         return;
                     }
                 } catch (dbRecordNotFoundException $e) {}
-            //}
         }
         $this->sendResponse($message->channel, $request, rawMessages::CHARACTER_IMPROVE, $variables, false, true);
     }
