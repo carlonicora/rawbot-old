@@ -42,7 +42,8 @@ class sessions extends abstractManagers {
         $variables = [];
 
         foreach ($this->characters as $characterKey=>$character){
-            $message->channel->sendMessage($characterKey);
+            $message->channel->sendMessage('servers' . PHP_EOL . json_encode($this->servers));
+            $message->channel->sendMessage('characters' . PHP_EOL . json_encode($this->characters));
             if (strpos($characterKey, $request->discordServerId) === 0){
                 $variable = [
                     'name'=>$character['name'],
