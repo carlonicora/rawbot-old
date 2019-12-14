@@ -41,10 +41,11 @@ class sessions extends abstractManagers {
 
         $variables = [];
 
-        foreach ($this->characters as $characterKey=>$character){
-            $message->channel->sendMessage('servers' . PHP_EOL . json_encode($this->servers));
-            $message->channel->sendMessage('characters' . PHP_EOL . json_encode($this->characters));
-            if (strpos($characterKey, $request->discordServerId) === 0){
+        $characters = tables::getCharacters()->loadFromServerId($this->servers[$request->discordServerId]['serverId']);
+
+        //foreach ($this->characters as $characterKey=>$character){
+        foreach ($characters as $character) {
+            //if (strpos($characterKey, $request->discordServerId) === 0){
                 $variable = [
                     'name'=>$character['name'],
                     'discordUserId'=>$character['discordUserId'],
@@ -101,7 +102,7 @@ class sessions extends abstractManagers {
                         return;
                     }
                 } catch (dbRecordNotFoundException $e) {}
-            }
+            //}
         }
         $this->sendResponse($message->channel, $request, rawMessages::CHARACTER_IMPROVE, $variables, false, true);
     }
