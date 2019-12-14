@@ -44,7 +44,7 @@ class sessions extends abstractManagers {
         try {
             $characters = tables::getCharacters()->loadFromServerId($this->servers[$request->discordServerId]['serverId']);
         } catch (dbRecordNotFoundException $e) {
-            $message->channel->sendMessage('error');
+            $message->channel->sendMessage('error'.json_encode($this->servers[$request->discordServerId]));
             return;
         }
 
