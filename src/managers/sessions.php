@@ -41,10 +41,18 @@ class sessions extends abstractManagers {
 
         $variables = [];
 
-        $characters = tables::getCharacters()->loadFromServerId($this->servers[$request->discordServerId]['serverId']);
+        try {
+            $characters = tables::getCharacters()->loadFromServerId($this->servers[$request->discordServerId]['serverId']);
+        } catch (dbRecordNotFoundException $e) {
+            $message->channel->sendMessage('error');
+            return;
+        }
+
+        $message->channel->sendMessage(json_encode($characters));
 
         //foreach ($this->characters as $characterKey=>$character){
         foreach ($characters as $character) {
+
             //if (strpos($characterKey, $request->discordServerId) === 0){
                 $variable = [
                     'name'=>$character['name'],
