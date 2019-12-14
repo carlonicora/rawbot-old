@@ -48,6 +48,6 @@ class characters extends abstractDatabaseManager {
         $sql = 'SELECT * FROM characters WHERE serverId=?;';
         $parameters = ['i',$serverId];
 
-        return $this->runReadSingle($sql,$parameters);
+        return $this->runRead($sql,$parameters);
     }
 }
