@@ -172,11 +172,17 @@ class masters extends abstractManagers {
                             return;
                         }
                     }
-
                     $this->sendResponse($message->channel, $request, rawMessages::CHARACTER_IMPROVE, $characterVariables, false, true);
                 } catch (dbRecordNotFoundException $e) {}
             }
         } catch (dbRecordNotFoundException $e) {}
+
+        try {
+            tables::getServers()->endSession($request->discordServerId);
+        } catch (Exception $e) {
+            $this->sendError($message->channel, $request->discordUserId, rawErrors::SESSION_END_FAILED);
+            return;
+        }
     }
 
     /**

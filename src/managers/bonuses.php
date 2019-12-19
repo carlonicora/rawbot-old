@@ -69,6 +69,12 @@ class bonuses extends abstractManagers {
         if ($this->characters[$request->discordServerId.$request->discordUserId]['bonusPoints'] === 0) {
             $this->sendError($message->channel, $request->discordUserId, rawErrors::BONUS_ZERO);
         } else {
+
+            if ($this->servers[$request->discordServerId]['inSession']){
+                $this->sendError($message->channel, $request->discordUserId, rawErrors::SESSION_STARTED);
+                return;
+            }
+
             try {
                 $characterAbility = $this->getCharacterAbility($message, $request);
 
@@ -140,6 +146,12 @@ class bonuses extends abstractManagers {
         if ($this->characters[$request->discordServerId.$request->discordUserId]['bonusPoints'] === 0) {
             $this->sendError($message->channel, $request->discordUserId, rawErrors::BONUS_ZERO);
         } else {
+
+            if ($this->servers[$request->discordServerId]['inSession']){
+                $this->sendError($message->channel, $request->discordUserId, rawErrors::SESSION_STARTED);
+                return;
+            }
+
             try {
                 $characterAbility = $this->getCharacterAbility($message, $request);
 

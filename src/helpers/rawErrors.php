@@ -25,6 +25,8 @@ class rawErrors {
     public const SESSION_START_FAILED=21;
     public const CHARACTER_NOT_FOUND=22;
     public const SESSION_NOT_STARTED=23;
+    public const SESSION_STARTED=24;
+    public const SESSION_END_FAILED=25;
 
     /**
      * @param int $errorCode
@@ -46,7 +48,11 @@ class rawErrors {
                     'Please contact the developers for support.';
                 break;
             case self::SESSION_START_FAILED:
-                $response = 'There has been a problem starting youse session!' . PHP_EOL . PHP_EOL .
+                $response = 'There has been a problem starting your session!' . PHP_EOL . PHP_EOL .
+                    'Please contact the developers for support.';
+                break;
+            case self::SESSION_END_FAILED:
+                $response = 'There has been a problem ending your session!' . PHP_EOL . PHP_EOL .
                     'Please contact the developers for support.';
                 break;
             case self::ABILITY_USED_FAILED:
@@ -118,6 +124,9 @@ class rawErrors {
                 break;
             case self::SESSION_NOT_STARTED:
                 $response = 'Sorry, you can do that only during a session!';
+                break;
+            case self::SESSION_STARTED:
+                $response = 'Sorry, you cna do that only when a session is ended!';
                 break;
             default:
                 $response = 'OOOPS, it seems I cannot understand what happened here!';

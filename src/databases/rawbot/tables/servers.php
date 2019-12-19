@@ -25,4 +25,15 @@ class servers extends abstractDatabaseManager {
 
         return $this->runReadSingle($sql,$parameters);
     }
+
+    /**
+     * @param string $discordServerId
+     * @return bool
+     */
+    public function endSession(string $discordServerId): bool {
+        $sql = 'UPDATE servers SET inSession=0 WHERE discordServerId=?;';
+        $parameters = ['s', $discordServerId];
+
+        return $this->runSql($sql, $parameters);
+    }
 }
