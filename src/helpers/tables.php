@@ -2,6 +2,7 @@
 namespace carlonicora\rawbot\helpers;
 
 use carlonicora\minimalism\database\databaseFactory;
+use carlonicora\minimalism\exceptions\dbConnectionException;
 use carlonicora\rawbot\databases\rawbot\tables\abilities;
 use carlonicora\rawbot\databases\rawbot\tables\characterAbilities;
 use carlonicora\rawbot\databases\rawbot\tables\characters;
@@ -25,7 +26,11 @@ class tables {
      */
     public static function getAbilities(): abilities {
         if (!isset(self::$abilities)){
-            self::$abilities = databaseFactory::create(abilities::class);
+            try {
+                self::$abilities = databaseFactory::create(abilities::class);
+            } catch (dbConnectionException $e) {
+                self::$abilities = null;
+            }
         }
         return self::$abilities;
     }
@@ -35,7 +40,11 @@ class tables {
      */
     public static function getCharacterAbilities(): characterAbilities {
         if (!isset(self::$characterAbilities)){
-            self::$characterAbilities = databaseFactory::create(characterAbilities::class);
+            try {
+                self::$characterAbilities = databaseFactory::create(characterAbilities::class);
+            } catch (dbConnectionException $e) {
+                self::$characterAbilities = null;
+            }
         }
         return self::$characterAbilities;
     }
@@ -45,7 +54,11 @@ class tables {
      */
     public static function getCharacters(): characters {
         if (!isset(self::$characters)){
-            self::$characters = databaseFactory::create(characters::class);
+            try {
+                self::$characters = databaseFactory::create(characters::class);
+            } catch (dbConnectionException $e) {
+                self::$characters = null;
+            }
         }
         return self::$characters;
     }
@@ -55,7 +68,11 @@ class tables {
      */
     public static function getServers(): servers {
         if (!isset(self::$servers)){
-            self::$servers = databaseFactory::create(servers::class);
+            try {
+                self::$servers = databaseFactory::create(servers::class);
+            } catch (dbConnectionException $e) {
+                self::$servers = null;
+            }
         }
         return self::$servers;
     }

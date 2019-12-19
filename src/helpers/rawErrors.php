@@ -1,8 +1,6 @@
 <?php
 namespace carlonicora\rawbot\helpers;
 
-use carlonicora\rawbot\configurations;
-
 class rawErrors {
     public const ABILITY_MISSING=1;
     public const ABILITY_CREATION_FAILED=2;

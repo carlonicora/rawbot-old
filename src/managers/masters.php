@@ -194,11 +194,12 @@ class masters extends abstractManagers {
             return;
         }
 
+        /** @noinspection PhpUnusedLocalVariableInspection */
         [$command, $subcommand, $amount, $user] = str_getcsv(substr($message->content, 1), ' ');
 
         if (null !== $user){
             try {
-                $discordUserId = substr($user, 2, strlen($user) - 3);
+                $discordUserId = substr($user, 2, -1);
                 $character = tables::getCharacters()->loadFromDiscordUserId($this->servers[$request->discordServerId]['serverId'], $discordUserId);
                 $character['bonusPoints'] += $amount;
                 $characters = [
