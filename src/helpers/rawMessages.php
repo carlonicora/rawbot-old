@@ -20,6 +20,7 @@ class rawMessages {
     public const GM_WELCOME=14;
     public const SESSION_STARTED=15;
     public const CHARACTER_AWARDED=16;
+    public const CHARACTER_LIST=17;
 
     /** @var configurations */
     //private $configurations;
@@ -158,6 +159,12 @@ class rawMessages {
                     $response .= '<@' . $character . '> ';
                 }
                 $response .= 'you have been rewarded with ' . $variables['award'] . ' bonus points!';
+                break;
+            case self::CHARACTER_LIST:
+                $response = 'The amazing party is composed by:' . PHP_EOL;
+                foreach ($variables as $character){
+                    $response .=  '    `' . $character['name'] . '`, played by <@' . $character['discordUserId'] . '>' . PHP_EOL;
+                }
                 break;
             default:
                 $response = 'YES! I am not sure to what exactly, but yes!' . PHP_EOL .

@@ -21,6 +21,10 @@ class characters extends abstractManagers {
             $command = $discord->registerCommand('character', [$this, 'init']);
             $discord->registerAlias('c', 'character');
 
+            $command->registerSubCommand('list', array($this, 'list'), [
+                'description'=>'Creates a new character for you'
+            ]);
+
             $command->registerSubCommand('create', array($this, 'create'), [
                 'description'=>'Creates a new character for you'
             ]);
@@ -63,6 +67,33 @@ class characters extends abstractManagers {
         $variables = $this->generateCharacterRecordSheet($request);
 
         $this->sendResponse($message->channel, $request, rawMessages::CHARACTER, $variables);
+    }
+
+    /**
+     * @param Message $message
+     */
+    public function list(Message $message): void {
+        try {
+            $request = $this->intialiseVariables($message, self::SERVER);
+        } catch (Exception $e) {
+            return;
+        }
+
+        try {
+            $characters = tables::getCharacters()->loadFromServerId($this->servers[$request->discordServerId]['serverId']);
+            $variables = [];
+
+            foreach ($characters as $characterKey=>$character){
+                $variables[] = [
+                    'discordUserId'=>$character['discordUserId'],
+                    'name'=>$character['name']
+                ];
+            }
+            $this->sendResponse($message->channel, $request, rawMessages::CHARACTER_LIST, $variables, false, true);
+        } catch (dbRecordNotFoundException $e) {
+            $this->sendError($message->channel, $request->discordUserId, rawErrors::CHARACTER_NOT_FOUND);
+            return;
+        }
     }
 
     /**
