@@ -76,7 +76,8 @@ class abilities extends abstractManagers {
                 'abilityId'=>$ability['abilityId'],
                 'specialisation'=>$specialisation,
                 'value'=>0,
-                'used'=>false
+                'used'=>false,
+                'wasUpdated'=>false
             ];
 
             try {
@@ -87,6 +88,13 @@ class abilities extends abstractManagers {
             }
 
             $characterAbility['trait'] = $ability['trait'];
+        }
+
+        if ($value !== NULL && (strpos($value, '+') === 0 || strpos($value, '-') === 0)){
+            $bonus = (int)$value;
+            $value = null;
+        } else {
+            $bonus = 0;
         }
 
         if ($value === NULL){
@@ -110,7 +118,7 @@ class abilities extends abstractManagers {
             }
             $abilityResult = $characterAbility['value'];
 
-            $result = max($rollResult + $traitResult + $abilityResult, 0);
+            $result = max($rollResult + $traitResult + $abilityResult + $bonus, 0);
 
             if ($specialisation !== '-'){
                 $abilityName .= '-' . $specialisation;
@@ -132,7 +140,8 @@ class abilities extends abstractManagers {
                 'result'=>$result,
                 'roll'=>$roll,
                 'trait'=>$traitResult,
-                'ability'=>$abilityResult
+                'ability'=>$abilityResult,
+                'bonus'=>$bonus
             ];
 
             $this->sendResponse($message->channel, $request, rawMessages::ABILITY_CHECK, $variables, true);

@@ -14,6 +14,12 @@ class rawMessages {
     public const ABILITY_UPDATE=8;
     public const ABILITY_LIST=9;
     public const CHARACTER_IMPROVE=10;
+    public const BONUS_COUNT=11;
+    public const BONUS_UP=12;
+    public const BONUS_ROLL=13;
+    public const GM_WELCOME=14;
+    public const SESSION_STARTED=15;
+    public const CHARACTER_AWARDED=16;
 
     /** @var configurations */
     //private $configurations;
@@ -90,7 +96,11 @@ class rawMessages {
                 break;
             case self::ABILITY_CHECK:
                 $response = '`' . $variables['abilityName'] . '` check: *`' . $variables['result'] . '`*' . PHP_EOL .
-                    '```1d20(' . $variables['roll'] . ') + trait(' . $variables['trait'] . ') + ability(' . $variables['ability'] . ')```';
+                    '```1d20(' . $variables['roll'] . ') + trait(' . $variables['trait'] . ') + ability(' . $variables['ability'] . ')';
+                if ($variables['bonus'] !== 0){
+                    $response .= ' + bonus (' . $variables['bonus'] . ')';
+                }
+                $response .= '```';
                 break;
             case self::ABILITY_LIST:
                 $response = 'List of abilities in RAW:' . PHP_EOL;
@@ -104,23 +114,50 @@ class rawMessages {
 
                 break;
             case self::CHARACTER_IMPROVE:
-                $response = 'The session is over and it is time to improve the ability the characters have used!' . PHP_EOL . PHP_EOL;
+                $response = '`' . $variables['characterName'] . '` improvements:' . PHP_EOL ;
 
-                foreach ($variables as $character){
-                    $response .= '<@' . $character['discordUserId'] . '>: these are the results for `' . $character['name'] . '`: ' . PHP_EOL;
-                    $response .= '```';
-                    foreach ($character['abilities'] as $ability) {
-                        $diff = $ability['roll'] - $ability['originalValue'] - $ability['traitValue'];
-                        $response .= $ability['name'] . ': ' . $ability['value'] . PHP_EOL;
-                        if ($ability['improvement'] > 0){
-                            $response .= '    Improves by ' . $ability['improvement'] . ' points: ';
-                        } else {
-                            $response .= '    Failed to improved: ';
-                        }
-                        $response .= '[1d100(' . $ability['roll'] . ') - ' . $ability['name'] . '(' . $ability['originalValue'] . ') - ' . $ability['trait'] . ' (' . $ability['traitValue'] . ') = ' . $diff . ']' . PHP_EOL;
+                foreach ($variables['abilities'] as $ability){
+                    if ($ability['improvement'] > 0){
+                        $response .= '    `' . $ability['name'] . '`: **+' . $ability['improvement'] . '** > ' . $ability['value'] . ' ';
+                    } else {
+                        $response .= '    *' . $ability['name'] . ': not improved* ';
                     }
-                    $response .= '```' . PHP_EOL . PHP_EOL;
+                    $response .= '(rolled ' . $ability['roll'] . ')' . PHP_EOL;
                 }
+                break;
+            case self::BONUS_COUNT:
+                $response = 'you have ' . $variables['bonuses'] . ' bonus points at your disposal';
+                break;
+            case self::BONUS_UP:
+                $response = 'you have increased your character\'s `' . $variables['abilityName'] . '` to `' . $variables['abilityValue'] . '`!';
+                break;
+            case self::BONUS_ROLL:
+                $diff = $variables['roll'] - $variables['originalValue'] - $variables['traitValue'];
+                if ($variables['improvement'] > 0){
+                    $response = 'you have increased your character\'s `' . $variables['name'] .
+                        '` by ' . $variables['improvement'] . ' points to a total of `' .  $variables['value']. '`' . PHP_EOL .
+                        '```[1d100(' . $variables['roll'] . ') - ' . $variables['name'] . '(' . $variables['originalValue'] . ') - ' . $variables['trait'] . ' (' . $variables['traitValue'] . ') = ' . $diff . ']```' . PHP_EOL;
+                } else {
+                    $response = 'you have failed to increased your character\'s `' . $variables['name'] . '`' . PHP_EOL .
+                        '```[1d100(' . $variables['roll'] . ') - ' . $variables['name'] . '(' . $variables['originalValue'] . ') - ' . $variables['trait'] . ' (' . $variables['traitValue'] . ') = ' . $diff . ']```' . PHP_EOL;
+                }
+                break;
+            case self::GM_WELCOME:
+                $response = 'Hail <@' . $variables['gm'] . '>, ruler of the universe!';
+                break;
+            case self::SESSION_STARTED:
+                $response = 'The session has started!' . PHP_EOL .
+                    'from now on every ability check rolled with `/a *abilityname*` will count to increase your ' .
+                    'character\'s abilities and the possbility to use any bonus point has been ' .
+                    'halted until the end of the session.' . PHP_EOL .
+                    '**enjoy your session**!';
+                break;
+            case self::CHARACTER_AWARDED:
+                $response = '';
+                foreach ($variables['characters'] as $character){
+                    $response .= '<@' . $character . '> ';
+                }
+                $response .= 'you have been rewarded with ' . $variables['award'] . ' bonus points!';
                 break;
             default:
                 $response = 'YES! I am not sure to what exactly, but yes!' . PHP_EOL .

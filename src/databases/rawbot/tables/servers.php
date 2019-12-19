@@ -5,19 +5,12 @@ use carlonicora\minimalism\database\abstractDatabaseManager;
 use carlonicora\minimalism\exceptions\dbRecordNotFoundException;
 
 class servers extends abstractDatabaseManager {
-    protected $dbToUse = 'rawbot';
-
     protected $fields = [
-        'serverId'=>self::PARAM_TYPE_INTEGER,
-        'discordServerId'=>self::PARAM_TYPE_STRING,
-        'discordUserId'=>self::PARAM_TYPE_STRING
+        'serverId'=>self::INTEGER+self::PRIMARY_KEY+self::AUTO_INCREMENT,
+        'discordServerId'=>self::STRING,
+        'discordUserId'=>self::STRING,
+        'inSession'=>self::INTEGER
     ];
-
-    protected $primaryKey = [
-        'serverId'=>self::PARAM_TYPE_INTEGER
-    ];
-
-    protected $autoIncrementField = 'serverId';
 
     /**
      * Loads a single server matching the identifier of the Discord Guild

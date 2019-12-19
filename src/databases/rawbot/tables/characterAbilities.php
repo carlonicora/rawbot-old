@@ -5,20 +5,13 @@ use carlonicora\minimalism\database\abstractDatabaseManager;
 use carlonicora\minimalism\exceptions\dbRecordNotFoundException;
 
 class characterAbilities extends abstractDatabaseManager {
-    protected $dbToUse = 'rawbot';
-
     protected $fields = [
-        'characterId'=>self::PARAM_TYPE_INTEGER,
-        'abilityId'=>self::PARAM_TYPE_INTEGER,
-        'specialisation'=>self::PARAM_TYPE_STRING,
-        'value'=>self::PARAM_TYPE_INTEGER,
-        'used'=>self::PARAM_TYPE_INTEGER
-    ];
-
-    protected $primaryKey = [
-        'characterId'=>self::PARAM_TYPE_INTEGER,
-        'abilityId'=>self::PARAM_TYPE_INTEGER,
-        'specialisation'=>self::PARAM_TYPE_STRING
+        'characterId'=>self::INTEGER+self::PRIMARY_KEY,
+        'abilityId'=>self::INTEGER+self::PRIMARY_KEY,
+        'specialisation'=>self::STRING+self::PRIMARY_KEY,
+        'value'=>self::INTEGER,
+        'used'=>self::INTEGER,
+        'wasUpdated'=>self::INTEGER
     ];
 
     /**
@@ -32,7 +25,8 @@ class characterAbilities extends abstractDatabaseManager {
      */
     public function loadFromCharacterIdAbilitySpecialisation(int $characterId, string $ability, string $specialisation): array {
         $sql = 'SELECT characterAbilities.*, ' .
-            'abilities.trait ' .
+            'abilities.trait, ' .
+            'abilities.name ' .
             'FROM characterAbilities ' .
             'JOIN abilities ON characterAbilities.abilityId=abilities.abilityId ' .
             'WHERE characterAbilities.characterId=? ' .
@@ -81,5 +75,20 @@ class characterAbilities extends abstractDatabaseManager {
         $parameters = ['ii', $characterId, true];
 
         return $this->runRead($sql, $parameters);
+    }
+
+    /**
+     * @param string $discordServerId
+     * @return bool
+     */
+    public function startSession(string $discordServerId): bool {
+        $sql = 'UPDATE characterAbilities ' .
+            'JOIN characters on characterAbilities.characterId=characters.characterId ' .
+            'JOIN servers on characters.serverId=servers.serverId ' .
+            'SET characterAbilities.used=0, characterAbilities.wasUpdated=0, servers.inSession=1 ' .
+            'WHERE servers.discordServerId=?;';
+        $parameters = ['s', $discordServerId];
+
+        return $this->runSql($sql, $parameters);
     }
 }

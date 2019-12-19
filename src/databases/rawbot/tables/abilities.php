@@ -5,19 +5,11 @@ use carlonicora\minimalism\database\abstractDatabaseManager;
 use carlonicora\minimalism\exceptions\dbRecordNotFoundException;
 
 class abilities extends abstractDatabaseManager {
-    protected $dbToUse = 'rawbot';
-
     protected $fields = [
-        'abilityId'=>self::PARAM_TYPE_INTEGER,
-        'trait'=>self::PARAM_TYPE_STRING,
-        'name'=>self::PARAM_TYPE_STRING
+        'abilityId'=>self::INTEGER+self::PRIMARY_KEY+self::AUTO_INCREMENT,
+        'trait'=>self::STRING,
+        'name'=>self::STRING
     ];
-
-    protected $primaryKey = [
-        'abilityId'=>self::PARAM_TYPE_INTEGER
-    ];
-
-    protected $autoIncrementField = 'abilityId';
 
     /**
      * @param string $name

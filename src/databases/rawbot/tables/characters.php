@@ -5,24 +5,17 @@ use carlonicora\minimalism\database\abstractDatabaseManager;
 use carlonicora\minimalism\exceptions\dbRecordNotFoundException;
 
 class characters extends abstractDatabaseManager {
-    protected $dbToUse = 'rawbot';
-
     protected $fields = [
-        'characterId'=>self::PARAM_TYPE_INTEGER,
-        'serverId'=>self::PARAM_TYPE_INTEGER,
-        'discordUserId'=>self::PARAM_TYPE_STRING,
-        'discordUserName'=>self::PARAM_TYPE_STRING,
-        'name'=>self::PARAM_TYPE_STRING,
-        'body'=>self::PARAM_TYPE_INTEGER,
-        'mind'=>self::PARAM_TYPE_INTEGER,
-        'spirit'=>self::PARAM_TYPE_INTEGER
+        'characterId'=>self::INTEGER+self::PRIMARY_KEY+self::AUTO_INCREMENT,
+        'serverId'=>self::INTEGER,
+        'discordUserId'=>self::STRING,
+        'discordUserName'=>self::STRING,
+        'name'=>self::STRING,
+        'body'=>self::INTEGER,
+        'mind'=>self::INTEGER,
+        'spirit'=>self::INTEGER,
+        'bonusPoints'=>self::INTEGER
     ];
-
-    protected $primaryKey = [
-        'characterId'=>self::PARAM_TYPE_INTEGER
-    ];
-
-    protected $autoIncrementField = 'characterId';
 
     /**
      * Loads a single character matching the identifier of the Discord User

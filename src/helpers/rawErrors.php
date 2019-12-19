@@ -18,20 +18,14 @@ class rawErrors {
     public const ABILITY_UPDATE_FAILED=12;
     public const ABILITY_LIST_EMPTY=13;
     public const CHARACTER_IMPROVE_FAILED=14;
-    public const SESSION_NON_MASTER=15;
-
-    /** @var configurations */
-    //private $configurations;
-
-    /**
-     * rawMessages constructor.
-     * @param configurations $configurations
-     */
-    /*
-    public function __construct(configurations $configurations){
-        $this->configurations = $configurations;
-    }
-    */
+    public const NON_MASTER=15;
+    public const BONUS_ZERO=16;
+    public const CHARACTER_ABILITY_MISSING=17;
+    public const CHARACTER_ABILITY_NOTUSED=18;
+    public const SESSION_NON_MASTER=19;
+    public const SESSION_UNSPECIFIED_COMMAND=20;
+    public const SESSION_START_FAILED=21;
+    public const CHARACTER_NOT_FOUND=22;
 
     /**
      * @param int $errorCode
@@ -50,6 +44,10 @@ class rawErrors {
                 break;
             case self::ABILITY_CREATION_FAILED:
                 $response = 'There has been a problem creating your character\'s ability.' . PHP_EOL . PHP_EOL .
+                    'Please contact the developers for support.';
+                break;
+            case self::SESSION_START_FAILED:
+                $response = 'There has been a problem starting youse session!' . PHP_EOL . PHP_EOL .
                     'Please contact the developers for support.';
                 break;
             case self::ABILITY_USED_FAILED:
@@ -96,8 +94,28 @@ class rawErrors {
                 $response = 'There has been a problem improving the characters\' ability.' . PHP_EOL . PHP_EOL .
                     'Please contact the developers for support.';
                 break;
-            case self::SESSION_NON_MASTER:
-                $response = 'Sorry, only the Game Master can terminate a session and allow the characters to improve their skills!';
+            case self::NON_MASTER:
+                $response = 'Sorry, only the Game Master can do this!';
+                break;
+            case self::BONUS_ZERO:
+                $response = 'Sorry, you do not have any bonus point to spend';
+                break;
+            case self::CHARACTER_ABILITY_MISSING:
+                $response = 'Your character must already posess an ability before using a bonus on it.';
+                break;
+            case self::CHARACTER_ABILITY_NOTUSED:
+                $response = 'Your character must have successfully updated their ability before using a bonus on it.';
+                break;
+            case self::SESSION_NON_MASTER;
+                $response = 'Sorry, only your GM can run this command!';
+                break;
+            case self::SESSION_UNSPECIFIED_COMMAND:
+                $response = 'Please specify if you want to start a session sending the command `/gm session start` ' .
+                'or end one wiht the command `/gm session end`!';
+                break;
+            case self::CHARACTER_NOT_FOUND:
+                $response = 'The character you were looking for was not found.' . PHP_EOL . PHP_EOL .
+                    'Please contact the developers for support.';
                 break;
             default:
                 $response = 'OOOPS, it seems I cannot understand what happened here!';

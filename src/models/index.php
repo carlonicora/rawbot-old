@@ -4,9 +4,10 @@ namespace carlonicora\rawbot\models;
 use carlonicora\minimalism\abstracts\abstractCliModel;
 use carlonicora\rawbot\configurations;
 use carlonicora\rawbot\managers\abilities;
+use carlonicora\rawbot\managers\bonuses;
 use carlonicora\rawbot\managers\characters;
 use carlonicora\rawbot\managers\servers;
-use carlonicora\rawbot\managers\sessions;
+use carlonicora\rawbot\managers\masters;
 use Discord\DiscordCommandClient;
 
 class index extends abstractCliModel {
@@ -37,7 +38,9 @@ class index extends abstractCliModel {
         /** @noinspection PhpUnusedLocalVariableInspection */
         $abilities = new abilities($this->configurations, $this->discord);
         /** @noinspection PhpUnusedLocalVariableInspection */
-        $sessions = new sessions($this->configurations, $this->discord);
+        $masters = new masters($this->configurations, $this->discord);
+        /** @noinspection PhpUnusedLocalVariableInspection */
+        $bonus = new bonuses($this->configurations, $this->discord);
 
         $this->discord->run();
 
