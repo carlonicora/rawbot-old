@@ -98,6 +98,12 @@ class abilities extends abstractManagers {
         }
 
         if ($value === NULL){
+
+            if (!$this->servers[$request->discordServerId]['inSession']){
+                $this->sendError($message->channel, $request->discordUserId, rawErrors::SESSION_NOT_STARTED);
+                return;
+            }
+
             try {
                 $roll = random_int(1, 20);
             } catch (Exception $e) {

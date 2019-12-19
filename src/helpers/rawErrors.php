@@ -24,6 +24,7 @@ class rawErrors {
     public const SESSION_UNSPECIFIED_COMMAND=20;
     public const SESSION_START_FAILED=21;
     public const CHARACTER_NOT_FOUND=22;
+    public const SESSION_NOT_STARTED=23;
 
     /**
      * @param int $errorCode
@@ -114,6 +115,9 @@ class rawErrors {
             case self::CHARACTER_NOT_FOUND:
                 $response = 'The character you were looking for was not found.' . PHP_EOL . PHP_EOL .
                     'Please contact the developers for support.';
+                break;
+            case self::SESSION_NOT_STARTED:
+                $response = 'Sorry, you can do that only during a session!';
                 break;
             default:
                 $response = 'OOOPS, it seems I cannot understand what happened here!';
