@@ -1,9 +1,10 @@
 {
   "name": "carlonicora/rawbot",
   "description": "Discord bot for RAW role playing game",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://carlonicora.com",
   "time": "2019-11-18",
+  "type": "project",
   "authors": [
     {
       "name": "Carlo Nicora",
@@ -12,6 +13,12 @@
       "role": "Developer"
     }
   ],
+  "config": {
+    "sort-packages": true,
+    "platform": {
+      "php": "7.3"
+    }
+  },
   "require": {
     "php": "^7.3",
     "ext-json": "*",

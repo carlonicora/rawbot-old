@@ -76,7 +76,7 @@ class bonuses extends abstractManagers {
             }
 
             try {
-                $characterAbility = $this->getCharacterAbility($message, $request);
+                $characterAbility = $this->getCharacterAbility($message, $request, false);
 
                 $oldValue = $characterAbility['value'];
                 $traitValue = $this->characters[$request->discordServerId.$request->discordUserId][$characterAbility['trait']];
@@ -184,10 +184,10 @@ class bonuses extends abstractManagers {
     /**
      * @param Message $message
      * @param request $request
+     * @param bool $requireUpdated
      * @return array
-     * @throws Exception
      */
-    private function getCharacterAbility(Message $message, request $request): array {
+    private function getCharacterAbility(Message $message, request $request, bool $requireUpdated = true): array {
         /** @noinspection PhpUnusedLocalVariableInspection */
         [$command, $subcommand, $abilityName] = str_getcsv(substr($message->content, 1), ' ');
         [$abilityName, $specialisation] = str_getcsv($abilityName, '-');
@@ -218,7 +218,7 @@ class bonuses extends abstractManagers {
             throw new RuntimeException('failed');
         }
 
-        if ($characterAbility['wasUpdated'] === false || $characterAbility['wasUpdated'] === 0){
+        if ($requireUpdated && ($characterAbility['wasUpdated'] === false || $characterAbility['wasUpdated'] === 0)){
             $this->sendError($message->channel, $request->discordUserId, rawErrors::CHARACTER_ABILITY_NOTUSED);
             throw new RuntimeException('failed');
         }
