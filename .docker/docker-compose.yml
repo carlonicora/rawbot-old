@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  rawbot:
+    container_name: rawbot
+    image: carlonicora/rawbot:2.0
+    build:
+      context: .
+      dockerfile: ./php-cli/Dockerfile
+      target: ${ENVIRONMENT}
+      args:
+        - XDEBUG_HOST=${XDEBUG_HOST}
+        - XDEBUG_PORT=${XDEBUG_PORT}
+        - WORKERS=${WORKERS}
+    working_dir: /app
+    restart: unless-stopped
+    volumes:
+      - ../:/app:delegated
+    networks:
+      - default_network
+    tty: true
+    stdin_open: true
+
+networks:
+  default_network:
+    driver: bridge
+    name: carlonicora
