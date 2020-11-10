@@ -21,6 +21,7 @@ abstract class AbstractFacade implements FacadeInterface
     protected const PARAMETER_DAMAGE=1002;
     protected const PARAMETER_OPPONENT=1003;
     protected const PARAMETER_NON_PLAYER_CHARACTER=1004;
+    protected const PARAMETER_PLAYER_CHARACTER=1006;
     protected const PARAMETER_WEAPON=1005;
 
     /** @var ServicesFactory  */
@@ -153,6 +154,9 @@ abstract class AbstractFacade implements FacadeInterface
                         case 'npc':
                             $this->namedParameters[self::PARAMETER_NON_PLAYER_CHARACTER] = $parameterValue;
                             break;
+                        case 'pc':
+                            $this->namedParameters[self::PARAMETER_PLAYER_CHARACTER] = $parameterValue;
+                            break;
                         case 'w':
                         case 'weapon':
                             try {
@@ -278,16 +282,20 @@ abstract class AbstractFacade implements FacadeInterface
         if ($this->amITheGM()){
             if (array_key_exists(self::PARAMETER_NON_PLAYER_CHARACTER, $this->namedParameters)) {
                 $shortName = $this->namedParameters[self::PARAMETER_NON_PLAYER_CHARACTER];
+            } elseif (array_key_exists(self::PARAMETER_PLAYER_CHARACTER, $this->namedParameters)) {
+                $shortName = $this->namedParameters[self::PARAMETER_PLAYER_CHARACTER];
             } else {
                 $shortName = array_pop($this->parameters);
             }
 
 
             try {
-                $response = $this->RAWBot->getDatabase()->getCharacters()->loadByCharacterShortName(
-                    $this->server['serverId'],
-                    strtolower($shortName)
-                );
+
+                if (strpos($shortName, '<@') === 0){
+                    $response = $this->RAWBot->getDatabase()->getCharacters()->loadByDiscordUserId($this->server['serverId'], substr($shortName, 3, -1));
+                } else {
+                    $response =$this->RAWBot->getDatabase()->getCharacters()->loadByCharacterShortName($this->server['serverId'], strtolower($shortName));
+                }
             } catch (DbRecordNotFoundException $e) {
                 if ($skipError) {
                     throw new RuntimeException('');

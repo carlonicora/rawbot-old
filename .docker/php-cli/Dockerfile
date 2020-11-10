@@ -23,14 +23,14 @@ RUN pecl install event \
     && docker-php-ext-enable --ini-name zz-event.ini event \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+FROM base as prd
+ARG WORKERS
 RUN addgroup -g 1000 -S dockeruser \
     && adduser -u 1000 -S dockeruser -G dockeruser \
     && touch /var/log/supervisord.log \
     && chown -R dockeruser:dockeruser /var/log/supervisord.log \
     && chmod -R 777 /tmp/scripts/
 
-FROM base as prd
-ARG WORKERS
 COPY ./shell/configurations/supervisord.conf /etc/supervisord.conf
 RUN /tmp/scripts/distributeConfig.sh /etc/supervisord.conf "{WORKERS}" "${WORKERS}" \
     && rm -rf /tmp/*
