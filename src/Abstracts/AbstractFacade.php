@@ -288,11 +288,9 @@ abstract class AbstractFacade implements FacadeInterface
                 $shortName = array_pop($this->parameters);
             }
 
-
             try {
-
                 if (strpos($shortName, '<@') === 0){
-                    $response = $this->RAWBot->getDatabase()->getCharacters()->loadByDiscordUserId($this->server['serverId'], substr($shortName, 3, -1));
+                    $response = $this->RAWBot->getDatabase()->getCharacters()->loadByDiscordUserId($this->server['serverId'], substr($shortName, 2, -1));
                 } else {
                     $response =$this->RAWBot->getDatabase()->getCharacters()->loadByCharacterShortName($this->server['serverId'], strtolower($shortName));
                 }
