@@ -11,6 +11,7 @@ use CarloNicora\RAWBot\Facades\CampaignFacade;
 use CarloNicora\RAWBot\Facades\ChallengeFacade;
 use CarloNicora\RAWBot\Facades\CharacterFacade;
 use CarloNicora\RAWBot\Facades\DamageFacade;
+use CarloNicora\RAWBot\Facades\InitiativeFacade;
 use CarloNicora\RAWBot\Facades\RollFacade;
 use CarloNicora\RAWBot\Facades\SessionFacade;
 use CarloNicora\RAWBot\Facades\SetFacade;
@@ -77,6 +78,7 @@ class RAWBot extends AbstractService
         new SessionFacade($this->services);
         new WeaponFacade($this->services);
         new ChallengeFacade($this->services);
+        new InitiativeFacade($this->services);
 
         $this->discord->run();
     }

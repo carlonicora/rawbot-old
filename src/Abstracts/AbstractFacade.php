@@ -23,6 +23,8 @@ abstract class AbstractFacade implements FacadeInterface
     protected const PARAMETER_NON_PLAYER_CHARACTER=1004;
     protected const PARAMETER_PLAYER_CHARACTER=1006;
     protected const PARAMETER_WEAPON=1005;
+    protected const PARAMETER_NON_PLAYER_CHARACTERS=1007;
+    protected const PARAMETER_PLAYER_CHARACTERS=1008;
 
     /** @var ServicesFactory  */
     protected ServicesFactory $services;
@@ -115,12 +117,12 @@ abstract class AbstractFacade implements FacadeInterface
     {
         $parameters = explode(' ', $command);
 
-        $skipNext = false;
+        $skipNext = 0;
         $allowedParameters = 0;
 
         foreach ($parameters as $parameterKey=>$parameter){
-            if ($skipNext){
-                $skipNext = false;
+            if ($skipNext > 0){
+                $skipNext--;
                 continue;
             }
 
@@ -134,7 +136,7 @@ abstract class AbstractFacade implements FacadeInterface
                             $parameterValue = '';
                         } else {
                             $parameterValue = $parameters[$parameterKey + 1];
-                            $skipNext = true;
+                            $skipNext = 1;
                         }
                     }
 
@@ -167,6 +169,20 @@ abstract class AbstractFacade implements FacadeInterface
                                 throw new RuntimeException('');
                             }
                             break;
+                        case 'npcs':
+                            $this->namedParameters[self::PARAMETER_NON_PLAYER_CHARACTERS] = $this->loadMultipleParameters(
+                                $parameters,
+                                $parameterKey
+                            );
+                            $skipNext = count($this->namedParameters);
+                            break;
+                        case 'pcs':
+                            $this->namedParameters[self::PARAMETER_PLAYER_CHARACTERS] = $this->loadMultipleParameters(
+                                $parameters,
+                                $parameterKey
+                            );
+                            $skipNext = count($this->namedParameters);
+                            break;
                     }
                 } elseif (array_key_exists($allowedParameters, $this->allowedParameters)){
                     $this->namedParameters[$this->allowedParameters[$allowedParameters]] = $parameter;
@@ -176,6 +192,24 @@ abstract class AbstractFacade implements FacadeInterface
                 }
             }
         }
+    }
+
+    /**
+     * @param array $parameters
+     * @param int $parameterStart
+     * @return array
+     */
+    private function loadMultipleParameters(array $parameters, int $parameterStart): array
+    {
+        $response = [];
+
+        $counter = 1;
+        while (array_key_exists($parameterStart + $counter, $parameters) && strpos($parameters[$parameterStart + $counter], '-') !== 0){
+            $response[] = $parameters[$parameterStart + $counter];
+            $counter++;
+        }
+
+        return $response;
     }
 
     /**
@@ -198,6 +232,21 @@ abstract class AbstractFacade implements FacadeInterface
         }
 
         return true;
+    }
+
+    /**
+     * @param string $parameterId
+     * @return array
+     * @throws DbRecordNotFoundException
+     * @throws Exception
+     */
+    protected function loadCharacterByParameter(string $parameterId): array
+    {
+        if (strpos($parameterId, '<@') === 0){
+            return $this->RAWBot->getDatabase()->getCharacters()->loadByDiscordUserId($this->server['serverId'], substr($parameterId, 2, -1));
+        }
+
+        return $this->RAWBot->getDatabase()->getCharacters()->loadByCharacterShortName($this->server['serverId'], strtolower($parameterId));
     }
 
     /**

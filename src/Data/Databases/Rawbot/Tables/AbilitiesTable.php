@@ -13,13 +13,14 @@ class AbilitiesTable extends AbstractTable
 
     /** @var array  */
     protected array $fields = [
-        'abilityId'     => TableInterface::INTEGER
-                        +  TableInterface::PRIMARY_KEY
-                        +  TableInterface::AUTO_INCREMENT,
-        'trait'         => TableInterface::STRING,
-        'name'          => TableInterface::STRING,
-        'canChallenge'  => TableInterface::INTEGER,
-        'canBeOpposed'  => TableInterface::INTEGER
+        'abilityId'         => TableInterface::INTEGER
+                            +  TableInterface::PRIMARY_KEY
+                            +  TableInterface::AUTO_INCREMENT,
+        'trait'             => TableInterface::STRING,
+        'name'              => TableInterface::STRING,
+        'canChallenge'      => TableInterface::INTEGER,
+        'canBeOpposed'      => TableInterface::INTEGER,
+        'definesInitiative' => TableInterface::INTEGER
     ];
 
     /**
@@ -45,6 +46,19 @@ class AbilitiesTable extends AbstractTable
     {
         $this->sql = $this->query->SELECT()
             . ' WHERE canChallenge=?;';
+        $this->parameters = ['i',1];
+
+        return $this->functions->runRead();
+    }
+
+    /**
+     * @return array
+     * @throws DbSqlException
+     */
+    public function loadInitiativeDefiners(): array
+    {
+        $this->sql = $this->query->SELECT()
+            . ' WHERE definesInitiative=?;';
         $this->parameters = ['i',1];
 
         return $this->functions->runRead();

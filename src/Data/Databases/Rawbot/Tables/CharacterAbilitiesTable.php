@@ -150,4 +150,27 @@ class CharacterAbilitiesTable extends AbstractTable
 
         return $this->functions->runRead();
     }
+
+    /**
+     * @param int $characterId
+     * @return array
+     * @throws DbRecordNotFoundException
+     * @throws DbSqlException
+     */
+    public function loadBestCharacterInitiativeAbility(int $characterId): array
+    {
+        $this->sql = 'SELECT'
+            . ' characterAbilities.*,'
+            . ' abilities.trait,'
+            . ' abilities.name'
+            . ' FROM characterAbilities'
+            . ' JOIN abilities ON characterAbilities.abilityId=abilities.abilityId'
+            . ' WHERE abilities.definesInitiative=?'
+            . ' AND characterAbilities.characterId=?'
+            . ' ORDER BY characterAbilities.value DESC'
+            . ' LIMIT 0,1;';
+        $this->parameters = ['ii', 1, $characterId];
+
+        return $this->functions->runReadSingle();
+    }
 }
