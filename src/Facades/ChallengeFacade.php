@@ -26,14 +26,14 @@ class ChallengeFacade extends AbstractFacade
     /** @var array|null  */
     private ?array $opposingAbility=null;
 
-    /** @var bool  */
-    private bool $isGmChallenging=false;
-
     /** @var int  */
     private int $challengerBonus=0;
 
     /** @var array|null  */
     private ?array $weapon=null;
+
+    /** @var array|null  */
+    private ?array $hitLocation=null;
 
     /** @var int  */
     private int $damage=0;
@@ -61,9 +61,9 @@ class ChallengeFacade extends AbstractFacade
         $this->challengingAbility=null;
         $this->opposingAbilities=null;
         $this->opposingAbility=null;
-        $this->isGmChallenging=false;
         $this->challengerBonus=0;
         $this->weapon=null;
+        $this->hitLocation=null;
         $this->damage=0;
 
         $this->allowedParameters = ['ability', 'bonus'];
@@ -90,21 +90,15 @@ class ChallengeFacade extends AbstractFacade
             $this->weapon = $this->namedParameters[self::PARAMETER_WEAPON];
         }
 
+        if (array_key_exists(self::PARAMETER_HIT_LOCATION, $this->namedParameters)){
+            $this->hitLocation = $this->namedParameters[self::PARAMETER_HIT_LOCATION];
+        }
+
         if (array_key_exists(self::PARAMETER_DAMAGE, $this->namedParameters)){
             $this->damage = $this->namedParameters[self::PARAMETER_DAMAGE];
         }
 
         $this->challenger = $this->getCharacter($message->content, 1);
-
-        if ($this->challenger['isNPC']) {
-            $this->isGmChallenging = true;
-        }
-
-        /*
-        if ($this->challenger['isNPC'] && !array_key_exists(self::PARAMETER_OPPONENT, $this->namedParameters)){
-            $this->RAWBot->getDispatcher()->sendError(RAWBotExceptions::gmShouldPickOpponent());
-        }
-        */
 
         try {
             $this->challengingAbility = $this->RAWBot->getDatabase()->getAbilities()->loadByName(strtolower($this->namedParameters['ability']));
@@ -243,7 +237,6 @@ class ChallengeFacade extends AbstractFacade
             return false;
         }
 
-        //if ($this->opposer === null && !$this->isGmChallenging && $this->amITheGM()) {
         if ($this->opposer === null && $this->amITheGM()) {
             try {
                 if (strpos($message->content, '<@') === 0){
@@ -413,10 +406,16 @@ class ChallengeFacade extends AbstractFacade
         $challengerAbility['used'] = 1;
         $this->RAWBot->getDatabase()->getCharacterAbilities()->update($challengerAbility);
 
+        $hitLocationDifficultyIncreate = 0;
+        if ($this->hitLocation !== null){
+            $hitLocationDifficultyIncreate = $this->hitLocation['difficultyIncrese'];
+        }
+
         $challengerRoll = DiceRoller::roll(20, $challengerCritical);
         $challengerTotal = $challengerAbility['value']
             + $this->challenger[$this->challengingAbility['trait']]
             + $challengerRoll
+            + $hitLocationDifficultyIncreate
             + $this->challengerBonus
             + $challengerDisadvantage;
         if ($challengerCritical === DiceRoller::CRITICAL_SUCCESS){
@@ -432,6 +431,7 @@ class ChallengeFacade extends AbstractFacade
             . ($challengerCritical === DiceRoller::CRITICAL_SUCCESS ? '**Critical Success**: 20' . PHP_EOL : '')
             . ($this->challengerBonus !== 0 ? 'Bonus: ' . $this->challengerBonus . PHP_EOL : '')
             . ($challengerDisadvantage !== 0 ? 'Untrained disadvantage: ' . $challengerDisadvantage . PHP_EOL : '')
+            . ($hitLocationDifficultyIncreate !== 0 ? 'Hit Location (' . $this->hitLocation['name'] . ') modifier:' . $hitLocationDifficultyIncreate . PHP_EOL : '')
             . '---' . PHP_EOL
             . '**Total: `' . $challengerTotal . '`**';
 
@@ -467,7 +467,7 @@ class ChallengeFacade extends AbstractFacade
 
             $opposerRoll = DiceRoller::roll(20, $opposerCritical);
             $opposerTotal = $opposerAbility['value']
-                + $this->opposer[$this->opposingAbility['trait']]
+                + $this->opposingAbility['traitValue']
                 + $opposerRoll
                 + $opposerDisadvantage;
             if ($opposerCritical === DiceRoller::CRITICAL_SUCCESS){
@@ -477,7 +477,7 @@ class ChallengeFacade extends AbstractFacade
             }
 
             $opposerDescription = 'Ability: ' . $opposerAbility['value'] .PHP_EOL
-                . ucfirst($this->opposingAbility['trait']) . ': ' . $this->opposer[$this->opposingAbility['trait']] . PHP_EOL
+                . ucfirst($this->opposingAbility['traitName']) . ': ' . $this->opposingAbility['traitValue'] . PHP_EOL
                 . 'Dice roll: ' . $opposerRoll . PHP_EOL
                 . ($opposerCritical === DiceRoller::CRITICAL_FAILURE ? '**Critical Failure**: -20' . PHP_EOL : '')
                 . ($opposerCritical === DiceRoller::CRITICAL_SUCCESS ? '**Critical Success**: 20' . PHP_EOL : '')
@@ -489,8 +489,10 @@ class ChallengeFacade extends AbstractFacade
                 $this->opposer['name'] . '`s ' . ucfirst($this->opposingAbility['name']) . ' check',
                 $opposerDescription
             );
-        } else {
+        } elseif ($this->challengingAbility['canBeOpposed']){
             $opposerTotal = 0;
+        } else {
+            $opposerTotal = 25;
         }
 
         if ($this->opposingAbilities !== null) {
@@ -521,7 +523,19 @@ class ChallengeFacade extends AbstractFacade
             }
 
             if ($this->damage > 0 && $success > 0){
-                $damage = $this->damage * $success;
+                $hitLocationMultiplier = 1;
+                if ($this->hitLocation === null) {
+                    $hitLocationRange = DiceRoller::simpleRoll(10);
+
+                    try {
+                        $this->hitLocation = $this->RAWBot->getDatabase()->getHitLocations()->loadByHitLocationRange($hitLocationRange);
+                    } catch (DbRecordNotFoundException $e) {
+                    }
+                } else {
+                    $hitLocationMultiplier = $this->hitLocation['damageMultiplier'];
+                }
+
+                $damage = $this->damage * $success * $hitLocationMultiplier;
 
                 $this->opposer['damages'] += $damage;
 
@@ -539,9 +553,19 @@ class ChallengeFacade extends AbstractFacade
             );
 
             if ($damage > 0){
+                $additionalDamageDescription = '';
+                if ($this->hitLocation !== null){
+                    $additionalDamageDescription = '\'s ' . $this->hitLocation['name'];
+
+                    if ($this->hitLocation['damageMultiplier'] !== 1){
+                        $additionalDamageDescription .= '(' . $this->hitLocation['damageMultiplier'] . ' multiplier to damages)';
+                    }
+                }
+
                 $this->response->setDescription(
                     $this->response->getDescription()
                     . ', delivering **' . $damage . '** to ' . $this->opposer['name']
+                    . $additionalDamageDescription
                 );
 
                 if ($this->weapon !== null){

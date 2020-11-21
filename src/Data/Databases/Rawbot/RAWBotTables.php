@@ -6,6 +6,7 @@ use CarloNicora\Minimalism\Services\MySQL\MySQL;
 use CarloNicora\RAWBot\Data\Databases\Rawbot\Tables\AbilitiesTable;
 use CarloNicora\RAWBot\Data\Databases\Rawbot\Tables\CharacterAbilitiesTable;
 use CarloNicora\RAWBot\Data\Databases\Rawbot\Tables\CharactersTable;
+use CarloNicora\RAWBot\Data\Databases\Rawbot\Tables\HitLocationTable;
 use CarloNicora\RAWBot\Data\Databases\Rawbot\Tables\OpposingAbilitiesTable;
 use CarloNicora\RAWBot\Data\Databases\Rawbot\Tables\ServersTable;
 use CarloNicora\RAWBot\Data\Databases\Rawbot\Tables\WeaponsTable;
@@ -24,6 +25,9 @@ class RAWBotTables
 
     /** @var CharactersTable|null  */
     private ?CharactersTable $characters=null;
+
+    /** @var HitLocationTable|null  */
+    private ?HitLocationTable $hitLocations=null;
 
     /** @var OpposingAbilitiesTable|null  */
     private ?OpposingAbilitiesTable $opposingAbilities=null;
@@ -78,6 +82,18 @@ class RAWBotTables
             $this->characterAbilities = $this->mysql->create(CharacterAbilitiesTable::class);
         }
         return $this->characterAbilities;
+    }
+
+    /**
+     * @return HitLocationTable
+     * @throws Exception
+     */
+    public function getHitLocations(): HitLocationTable
+    {
+        if ($this->hitLocations === null){
+            $this->hitLocations = $this->mysql->create(HitLocationTable::class);
+        }
+        return $this->hitLocations;
     }
 
     /**

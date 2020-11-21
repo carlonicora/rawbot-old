@@ -16,11 +16,7 @@ class DiceRoller
      */
     public static function roll(int $diceSides, int &$criticalRoll): int
     {
-        try {
-            $result = random_int(1, $diceSides);
-        } catch (Exception $e) {
-            $result = $diceSides / 10 * 4;
-        }
+        $result = self::simpleRoll($diceSides);
 
         switch ($result) {
             case 1:
@@ -35,6 +31,19 @@ class DiceRoller
         }
 
         return $result;
+    }
+
+    /**
+     * @param int $diceSides
+     * @return int
+     */
+    public static function simpleRoll(int $diceSides): int
+    {
+        try {
+            return random_int(1, $diceSides);
+        } catch (Exception $e) {
+            return $diceSides / 10 * 4;
+        }
     }
 
     /**

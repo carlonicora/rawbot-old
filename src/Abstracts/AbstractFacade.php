@@ -25,6 +25,7 @@ abstract class AbstractFacade implements FacadeInterface
     protected const PARAMETER_WEAPON=1005;
     protected const PARAMETER_NON_PLAYER_CHARACTERS=1007;
     protected const PARAMETER_PLAYER_CHARACTERS=1008;
+    protected const PARAMETER_HIT_LOCATION=1009;
 
     /** @var ServicesFactory  */
     protected ServicesFactory $services;
@@ -159,6 +160,17 @@ abstract class AbstractFacade implements FacadeInterface
                         case 'pc':
                             $this->namedParameters[self::PARAMETER_PLAYER_CHARACTER] = $parameterValue;
                             break;
+                        case 'l':
+                        case 'location':
+                        try {
+                            $this->namedParameters[self::PARAMETER_HIT_LOCATION] = $this->RAWBot->getDatabase()->getHitLocations()->loadHitLocationByName(
+                                strtolower($parameterValue)
+                            );
+                        } catch (DbRecordNotFoundException $e) {
+                            $this->RAWBot->getDispatcher()->sendError(RAWBotExceptions::hitLocationNotFound($parameterValue));
+                            throw new RuntimeException('');
+                        }
+                        break;
                         case 'w':
                         case 'weapon':
                             try {

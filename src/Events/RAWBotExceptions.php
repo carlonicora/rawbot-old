@@ -330,5 +330,14 @@ class RAWBotExceptions
         );
     }
 
-
+    /**
+     * @param string $locationName
+     * @return RAWBotException
+     */
+    public static function hitLocationNotFound(string $locationName): RAWBotException
+    {
+        return new RAWBotException(
+            'The body location you tried to hit (' . $locationName . ') does not exist.'
+        );
+    }
 }
