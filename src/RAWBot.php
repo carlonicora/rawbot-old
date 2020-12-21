@@ -66,6 +66,7 @@ class RAWBot extends AbstractService
 
     /**
      * @throws Exception
+     * @noinspection PhpExpressionResultUnusedInspection
      */
     public function start() : void
     {

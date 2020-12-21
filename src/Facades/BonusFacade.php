@@ -17,24 +17,36 @@ class BonusFacade extends AbstractFacade
     {
         $bonus = $this->RAWBot->getDiscord()->registerCommand(
             'bonus',
-            [$this, 'replyWithOptions']
+            [$this, 'replyWithOptions'],
+            [
+                'description' => 'Gives you the amount of bonus points you can use, and the list of abilities you can try and upgrade'
+            ]
         );
 
         $this->RAWBot->getDiscord()->registerAlias('b', 'bonus');
 
         $bonus->registerSubCommand(
             'up',
-            [$this, 'upBonus']
+            [$this, 'upBonus'],
+            [
+                'description' => 'Upgrades the successfully enhanced ability by one point. Only the abilities you have used during the session and upgraded at the end of it.'
+            ]
         );
 
         $bonus->registerSubCommand(
             'roll',
-            [$this, 'rollBonus']
+            [$this, 'rollBonus'],
+            [
+                'description' => 'Tries to upgrade your used ability with a dice roll. The roll can update the ability by up to 8 points, but there is the risk not to update.'
+            ]
         );
 
         $bonus->registerSubCommand(
             'award',
-            [$this, 'awardBonus']
+            [$this, 'awardBonus'],
+            [
+                'description' => 'Awards an amount of bonus points to one or more player characters'
+            ]
         );
     }
 
@@ -59,7 +71,7 @@ class BonusFacade extends AbstractFacade
             $this->RAWBot->getDispatcher()->sendError(RAWBotExceptions::bonusPointsNotAvailable());
         }
 
-        $usedAbilities = $this->RAWBot->getDatabase()->getCharacterAbilities()->loadUsed(
+        $usedAbilities = $this->RAWBot->getDatabase()->getCharacterAbilities()->loadBonusRollable(
             $character['characterId']
         );
 
@@ -231,7 +243,7 @@ class BonusFacade extends AbstractFacade
             $this->RAWBot->getDispatcher()->sendError(RAWBotExceptions::bonusPointsNotAvailable());
         }
 
-        $usedAbilities = $this->RAWBot->getDatabase()->getCharacterAbilities()->loadUsed(
+        $usedAbilities = $this->RAWBot->getDatabase()->getCharacterAbilities()->loadBonusRollable(
             $character['characterId']
         );
 

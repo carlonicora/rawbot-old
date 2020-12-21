@@ -4,7 +4,7 @@ namespace CarloNicora\RAWBot\Data\Databases\Rawbot\Tables;
 use CarloNicora\Minimalism\Services\MySQL\Abstracts\AbstractTable;
 use CarloNicora\Minimalism\Services\MySQL\Exceptions\DbRecordNotFoundException;
 use CarloNicora\Minimalism\Services\MySQL\Exceptions\DbSqlException;
-use CarloNicora\Minimalism\Services\MySQL\Interfaces\TableInterface;
+use CarloNicora\Minimalism\Services\MySQL\Interfaces\FieldInterface;
 
 class AbilitiesTable extends AbstractTable
 {
@@ -13,14 +13,14 @@ class AbilitiesTable extends AbstractTable
 
     /** @var array  */
     protected array $fields = [
-        'abilityId'         => TableInterface::INTEGER
-                            +  TableInterface::PRIMARY_KEY
-                            +  TableInterface::AUTO_INCREMENT,
-        'trait'             => TableInterface::STRING,
-        'name'              => TableInterface::STRING,
-        'canChallenge'      => TableInterface::INTEGER,
-        'canBeOpposed'      => TableInterface::INTEGER,
-        'definesInitiative' => TableInterface::INTEGER
+        'abilityId'         => FieldInterface::INTEGER
+                            +  FieldInterface::PRIMARY_KEY
+                            +  FieldInterface::AUTO_INCREMENT,
+        'trait'             => FieldInterface::STRING,
+        'name'              => FieldInterface::STRING,
+        'canChallenge'      => FieldInterface::INTEGER,
+        'canBeOpposed'      => FieldInterface::INTEGER,
+        'definesInitiative' => FieldInterface::INTEGER
     ];
 
     /**

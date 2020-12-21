@@ -4,7 +4,7 @@ namespace CarloNicora\RAWBot\Data\Databases\Rawbot\Tables;
 use CarloNicora\Minimalism\Services\MySQL\Abstracts\AbstractTable;
 use CarloNicora\Minimalism\Services\MySQL\Exceptions\DbRecordNotFoundException;
 use CarloNicora\Minimalism\Services\MySQL\Exceptions\DbSqlException;
-use CarloNicora\Minimalism\Services\MySQL\Interfaces\TableInterface;
+use CarloNicora\Minimalism\Services\MySQL\Interfaces\FieldInterface;
 
 class CharacterAbilitiesTable extends AbstractTable
 {
@@ -13,15 +13,15 @@ class CharacterAbilitiesTable extends AbstractTable
 
     /** @var array  */
     protected array $fields = [
-        'characterId'       => TableInterface::INTEGER
-                            +  TableInterface::PRIMARY_KEY,
-        'abilityId'         => TableInterface::INTEGER
-                            +  TableInterface::PRIMARY_KEY,
-        'specialisation'    => TableInterface::STRING
-                            +  TableInterface::PRIMARY_KEY,
-        'value'             => TableInterface::INTEGER,
-        'used'              => TableInterface::INTEGER,
-        'wasUpdated'        => TableInterface::INTEGER
+        'characterId'       => FieldInterface::INTEGER
+                            +  FieldInterface::PRIMARY_KEY,
+        'abilityId'         => FieldInterface::INTEGER
+                            +  FieldInterface::PRIMARY_KEY,
+        'specialisation'    => FieldInterface::STRING
+                            +  FieldInterface::PRIMARY_KEY,
+        'value'             => FieldInterface::INTEGER,
+        'used'              => FieldInterface::INTEGER,
+        'wasUpdated'        => FieldInterface::INTEGER
     ];
 
     /**
@@ -53,6 +53,22 @@ class CharacterAbilitiesTable extends AbstractTable
             . ' JOIN abilities ON characterAbilities.abilityId=abilities.abilityId'
             . ' WHERE characterId=? AND used=?;';
         $this->parameters = ['ii',$characterId, 1];
+
+        return $this->functions->runRead();
+    }
+
+    /**
+     * @param int $characterId
+     * @return array
+     * @throws DbSqlException
+     */
+    public function loadBonusRollable(int $characterId): array
+    {
+        $this->sql = 'SELECT abilities.abilityId, abilities.name, abilities.trait, characterAbilities.value, characterAbilities.specialisation'
+            . ' FROM characterAbilities'
+            . ' JOIN abilities ON characterAbilities.abilityId=abilities.abilityId'
+            . ' WHERE characterId=? AND characterAbilities.value>?;';
+        $this->parameters = ['ii',$characterId, 0];
 
         return $this->functions->runRead();
     }

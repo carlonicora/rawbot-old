@@ -4,7 +4,7 @@ namespace CarloNicora\RAWBot\Data\Databases\Rawbot\Tables;
 use CarloNicora\Minimalism\Services\MySQL\Abstracts\AbstractTable;
 use CarloNicora\Minimalism\Services\MySQL\Exceptions\DbRecordNotFoundException;
 use CarloNicora\Minimalism\Services\MySQL\Exceptions\DbSqlException;
-use CarloNicora\Minimalism\Services\MySQL\Interfaces\TableInterface;
+use CarloNicora\Minimalism\Services\MySQL\Interfaces\FieldInterface;
 
 class CharactersTable extends AbstractTable
 {
@@ -13,23 +13,23 @@ class CharactersTable extends AbstractTable
 
     /** @var array  */
     protected array $fields = [
-        'characterId'                   => TableInterface::INTEGER
-                                        +  TableInterface::PRIMARY_KEY
-                                        +  TableInterface::AUTO_INCREMENT,
-        'serverId'                      => TableInterface::INTEGER,
-        'discordUserId'                 => TableInterface::STRING,
-        'discordUserName'               => TableInterface::STRING,
-        'isNPC'                         => TableInterface::INTEGER,
-        'shortName'                     => TableInterface::STRING,
-        'name'                          => TableInterface::STRING,
-        'body'                          => TableInterface::INTEGER,
-        'mind'                          => TableInterface::INTEGER,
-        'spirit'                        => TableInterface::INTEGER,
-        'bonusPoints'                   => TableInterface::INTEGER,
-        'damages'                       => TableInterface::INTEGER,
-        'description'                   => TableInterface::STRING,
-        'automaticallyAcceptChallenges' => TableInterface::INTEGER,
-        'thumbnail'                     => TableInterface::STRING
+        'characterId'                   => FieldInterface::INTEGER
+                                        +  FieldInterface::PRIMARY_KEY
+                                        +  FieldInterface::AUTO_INCREMENT,
+        'serverId'                      => FieldInterface::INTEGER,
+        'discordUserId'                 => FieldInterface::STRING,
+        'discordUserName'               => FieldInterface::STRING,
+        'isNPC'                         => FieldInterface::INTEGER,
+        'shortName'                     => FieldInterface::STRING,
+        'name'                          => FieldInterface::STRING,
+        'body'                          => FieldInterface::INTEGER,
+        'mind'                          => FieldInterface::INTEGER,
+        'spirit'                        => FieldInterface::INTEGER,
+        'bonusPoints'                   => FieldInterface::INTEGER,
+        'damages'                       => FieldInterface::INTEGER,
+        'description'                   => FieldInterface::STRING,
+        'automaticallyAcceptChallenges' => FieldInterface::INTEGER,
+        'thumbnail'                     => FieldInterface::STRING
     ];
 
     /**

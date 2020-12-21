@@ -45,7 +45,10 @@ class ChallengeFacade extends AbstractFacade
     {
         $this->RAWBot->getDiscord()->registerCommand(
             'challenge',
-            [$this, 'initiateChallenge']
+            [$this, 'initiateChallenge'],
+            [
+                'description' => 'Challenges '
+            ]
         );
 
     }

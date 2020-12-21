@@ -17,7 +17,12 @@ RUN set -xe \
 COPY ./php-cli/configurations/*.ini /usr/local/etc/php/conf.d/
 COPY ./shell/ /tmp/scripts/
 
-RUN docker-php-ext-install mysqli bcmath sockets zip
+RUN docker-php-ext-install mysqli bcmath sockets zip \
+    && addgroup -g 1000 -S dockeruser \
+    && adduser -u 1000 -S dockeruser -G dockeruser \
+    && touch /var/log/supervisord.log \
+    && chown -R dockeruser:dockeruser /var/log/supervisord.log \
+    && chmod -R 777 /tmp/scripts/
 
 RUN pecl install event \
     && docker-php-ext-enable --ini-name zz-event.ini event \
@@ -25,11 +30,6 @@ RUN pecl install event \
 
 FROM base as prd
 ARG WORKERS
-RUN addgroup -g 1000 -S dockeruser \
-    && adduser -u 1000 -S dockeruser -G dockeruser \
-    && touch /var/log/supervisord.log \
-    && chown -R dockeruser:dockeruser /var/log/supervisord.log \
-    && chmod -R 777 /tmp/scripts/
 
 COPY ./shell/configurations/supervisord.conf /etc/supervisord.conf
 RUN /tmp/scripts/distributeConfig.sh /etc/supervisord.conf "{WORKERS}" "${WORKERS}" \
